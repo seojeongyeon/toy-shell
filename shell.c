@@ -6,19 +6,26 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+
+/*색상*/
+#define COLOR_YELLOW "\x1B[33m"
+#define COLOR_RESET "\x1B[0m"
 #define MAX_LEN_LINE    100
 
 int main(void)
 {
+    char* getcwd( char* buf, size_t bufsize);
+
     char command[MAX_LEN_LINE];
     char *args[] = {command, NULL};
     int ret, status;
     pid_t pid, cpid;
-    
+
+   
     while (true) {
         char *s;
         int len;
-        
+	        
         printf("MyShell $ ");
         s = fgets(command, MAX_LEN_LINE, stdin);
         if (s == NULL) {
@@ -32,8 +39,27 @@ int main(void)
             command[len - 1] = '\0'; 
         }
         
-        printf("[%s]\n", command);
-      
+         
+	/*exit구현*/
+         if(!strcmp(command, "exit")){
+                 
+		  /*색상변경*/
+		  printf(COLOR_YELLOW);
+		  printf( "exit!!!\n");
+		  printf(COLOR_RESET);
+                  return -1;
+  
+         }
+
+
+	/*ls구현*/
+	args[0] = command;
+	if (!strcmp(command, "ls")){ 
+		args[0] = "/bin/ls";
+		
+	}
+    
+ 
         pid = fork();
         if (pid < 0) {
             fprintf(stderr, "fork failed\n");
@@ -59,3 +85,4 @@ int main(void)
     }
     return 0;
 }
+
